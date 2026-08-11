@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
 import { FaMapMarkerAlt, FaBriefcase, FaMoneyBillWave } from "react-icons/fa";
+import fallbackImage from "../assets/no_logo_company.png";
 
 function JobCard({ job }) {
-  const fallbackImage =
-    "https://placehold.co/600x400?text=Company+Logo";
 
   const formattedDate = new Date(job.createdAt).toLocaleDateString("en-GB");
+  const imageUrl =
+  job?.image?.url?.includes("example.com")
+    ? fallbackImage
+    : job?.image?.url || fallbackImage;
 
   const formattedSalary =
     job.salary?.min && job.salary?.max
@@ -15,12 +18,13 @@ function JobCard({ job }) {
   return (
     <div className="card h-100 shadow-sm">
       <img
-        src={job.image?.url || fallbackImage}
+        src={imageUrl}
         className="card-img-top"
         alt={job.image?.alt || `${job.company} logo`}
         style={{
-          height: "200px",
-          objectFit: "cover",
+          height: "100%",
+          width: "100%",
+          objectFit: "fill",
         }}
         onError={(e) => {
           e.currentTarget.onerror = null;

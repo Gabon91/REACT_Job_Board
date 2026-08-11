@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { FaMapMarkerAlt, FaBriefcase, FaMoneyBillWave, FaEnvelope, FaPhone, FaCalendarAlt, FaHashtag } from "react-icons/fa";
 import { getJobById } from "../services/jobsService";
+import fallbackImage from "../assets/no_logo_company.png";
 
 function JobDetails() {
   const { id } = useParams();
@@ -9,6 +10,10 @@ function JobDetails() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState("");
+  const imageUrl =
+    job?.image?.url?.includes("example.com")
+    ? fallbackImage
+    : job?.image?.url || fallbackImage;
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -66,7 +71,6 @@ function JobDetails() {
     return null;
   }
 
-  const fallbackImage = "https://placehold.co/800x400?text=Company+Logo";
   const formattedDate = job.createdAt
     ? new Date(job.createdAt).toLocaleDateString("en-GB")
     : "Not available";
@@ -80,13 +84,10 @@ function JobDetails() {
       <Link to="/" className="btn btn-outline-secondary mb-4"> ← Back to Jobs </Link>
       <div className="card shadow-sm">
         <img
-          src={job.image?.url || fallbackImage}
+          src={imageUrl}
           alt={job.image?.alt || `${job.company} logo`}
           className="card-img-top"
-          style={{
-            maxHeight: "400px",
-            objectFit: "cover",
-          }}
+          style={{objectFit: "contain" }}
           onError={(e) => {
             e.currentTarget.onerror = null;
             e.currentTarget.src = fallbackImage;
