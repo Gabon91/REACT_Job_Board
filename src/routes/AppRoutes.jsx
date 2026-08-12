@@ -11,22 +11,28 @@ import About from "../pages/About";
 import Profile from "../pages/Profile";
 import AdminDashboard from "../pages/AdminDashboard";
 import NotFound from "../pages/NotFound";
+import ProtectedRoute from "./ProtectedRoute";
 
 function AppRoutes() {
   return (
     <Routes>
+      {/* Public Routes */}
       <Route path="/" element={<Home />} />
       <Route path="/jobs/:id" element={<JobDetails />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/saved-jobs" element={<SavedJobs />} />
-      <Route path="/my-jobs" element={<MyJobs />} />
-      <Route path="/jobs/create" element={<CreateJob />} />
-      <Route path="/jobs/edit/:id" element={<EditJob />} />
       <Route path="/about" element={<About />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/admin" element={<AdminDashboard />} />
-
+      {/* Guests Only */}
+      <Route path="/login" element={<ProtectedRoute guestOnly><Login /></ProtectedRoute>} />
+      <Route path="/register" element={<ProtectedRoute guestOnly><Register /></ProtectedRoute>} />
+      {/* Logged-in Users' Routes */}
+      <Route path="/profile" element={<ProtectedRoute requireAuth><Profile /></ProtectedRoute>} />
+      <Route path="/saved-jobs" element={<ProtectedRoute requireAuth><SavedJobs /></ProtectedRoute>} />
+      {/* Recruiter Routes */}
+      <Route path="/my-jobs" element={<ProtectedRoute requireRecruiter><MyJobs /></ProtectedRoute>} />
+      <Route path="/jobs/create" element={<ProtectedRoute requireRecruiter><CreateJob /></ProtectedRoute>} />
+      {/* recruiter and admin protection route. Ownership will be checked when we implement editing */}
+      <Route path="/jobs/edit/:id" element={<ProtectedRoute requireAuth><EditJob /></ProtectedRoute>} />
+      {/* Admin Routes */}
+      <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminDashboard /></ProtectedRoute>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

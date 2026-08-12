@@ -1,9 +1,12 @@
 import { ToastContainer } from "react-toastify";
 import AppRoutes from "./routes/AppRoutes";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
     <>
+      <Navbar />
+
       <AppRoutes />
 
       <ToastContainer
