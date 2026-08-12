@@ -12,14 +12,12 @@ apiClient.interceptors.request.use(
     const token = localStorage.getItem("token");
 
     if (token) {
-      config.headers["x-auth-token"] = token;
+      config.headers["token-auth-x"] = token;
     }
 
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 export default apiClient;
