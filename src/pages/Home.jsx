@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { getAllJobs } from "../services/jobsService";
+import { useAuth } from "../contexts/AuthContext";
 import JobCard from "../components/JobCard";
 import SearchFilters from "../components/SearchFilters";
 import Pagination from "../components/Pagination";
@@ -25,6 +26,7 @@ function Home() {
   const [filters, setFilters] = useState(initialFilters);
   const [currentPage, setCurrentPage] = useState(1);
   const debouncedFilters = useDebounce(filters, 300);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -98,6 +100,31 @@ function Home() {
     }
   };
   
+const handleSavedChange = (jobId, isSaved) => {
+  const currentUserId = user?.id || user?._id;
+  if (!currentUserId) 
+    return;
+  
+  setJobs((currentJobs) => 
+    currentJobs.map((job) => {
+      if (job._id !== jobId)
+        return job;
+      const currentSavedBy = job.savedBy || [];
+      return {
+        ...job,
+        savedBy: isSaved
+          ? [
+              ...new Set([
+                ...currentSavedBy,
+                currentUserId,
+              ]),
+            ]
+          : currentSavedBy.filter((id) => id !== currentUserId),
+      };
+    })
+  );
+};
+
   if (loading) {
     return (
       <div className="container py-5 text-center">
@@ -151,7 +178,7 @@ function Home() {
             <div className="row g-4">
               {currentJobs.map((job) => (
                 <div className="col-12 col-md-6 col-lg-4" key={job._id}> 
-                <JobCard job={job}></JobCard>
+                <JobCard job={job} onSavedChange={handleSavedChange}/>                
                 </div>
               ))}
             </div>
