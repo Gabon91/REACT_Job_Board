@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import JobCard from "../components/JobCard";
+import JobCardSkeleton from "../components/JobCardSkeleton";
 import { getAllJobs } from "../services/jobsService";
 import { useAuth } from "../contexts/AuthContext";
+import getErrorMessage from "../utils/getErrorMessage";
 
 function SavedJobs() {
   const { user } = useAuth();
@@ -17,10 +19,8 @@ function SavedJobs() {
         const jobs = await getAllJobs();
         const filteredJobs = jobs.filter((job) => job.savedBy?.includes(currentUserId));
         setSavedJobs(filteredJobs);
-      } catch {
-        setError(
-          "Failed to load saved jobs."
-        );
+      } catch (error) {
+        setError(getErrorMessage(error, "Failed to load saved jobs."));
       } finally {
         setLoading(false);
       }
@@ -39,14 +39,21 @@ function SavedJobs() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="container py-5 text-center">
-        <div className="spinner-border" role="status"/>
-        <p className="mt-3"> Loading saved jobs... </p>
+if (loading) {
+  return (
+    <main className="container py-5">
+      <h1 className="mb-4"> Saved Jobs </h1>
+      <div className="row g-4">
+        {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="col-12 col-md-6 col-lg-4">
+              <JobCardSkeleton />
+            </div>
+          )
+        )}
       </div>
-    );
-  }
+    </main>
+  );
+}
 
   if (error) {
     return (

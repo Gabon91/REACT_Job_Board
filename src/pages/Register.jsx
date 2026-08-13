@@ -5,6 +5,7 @@ import FormInput from "../components/FormInput";
 import registerSchema from "../validation/registerSchema";
 import { registerUser } from "../services/usersService";
 import normalizeUser from "../utils/normalizeUser";
+import getErrorMessage from "../utils/getErrorMessage";
 
 function Register() {
   const navigate = useNavigate();
@@ -33,9 +34,14 @@ function Register() {
       toast.success("Registration completed successfully!");
       navigate("/login");
     } catch (error) {
-      const message = error.response?.data?.message || error.response?.data || error.message || "Registration failed. Please try again.";
-      toast.error(typeof message === "string"? message: "Registration failed. Please try again."
+      const message = getErrorMessage(error, "Registration failed. Please try again.",
+        {
+          401: "Incorrect email or password.",
+          423: "Your account is locked. Please try again later.",
+        }
       );
+
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -49,7 +55,7 @@ function Register() {
             <div className="card-body p-4 p-md-5">
               <h1 className="text-center mb-4"> Create Account </h1>
               <Formik initialValues={initialValues} validationSchema={registerSchema} onSubmit={handleSubmit}>
-                {({ isSubmitting }) => (
+                {({ isSubmitting, isValid, dirty }) => (
                   <Form>
                     <h4 className="mb-3"> Personal Details </h4>
                     <div className="row">
@@ -127,7 +133,9 @@ function Register() {
                       <label htmlFor="isRecruiter" className="form-check-label"> Register as a recruiter </label>
                     </div>
 
-                    <button type="submit" className="btn btn-primary w-100" disabled={isSubmitting}>
+                    <button type="submit" className="btn btn-primary w-100" 
+                    disabled={isSubmitting ||!isValid ||!dirty}
+                    >
                       {isSubmitting? "Creating account..." : "Create Account"}
                     </button>
                   </Form>

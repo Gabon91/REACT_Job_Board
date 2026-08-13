@@ -7,6 +7,7 @@ import {getJobById, updateJob} from "../services/jobsService";
 import jobSchema from "../validation/jobSchema";
 import normalizeJob from "../utils/normalizeJob";
 import {useAuth} from "../contexts/AuthContext";
+import getErrorMessage from "../utils/getErrorMessage";
 
 function EditJob() {
   const { id } = useParams();
@@ -29,11 +30,7 @@ function EditJob() {
         }
         setJob(data);
       } catch (error) {
-        if (error.response?.status === 404) {
-          setError("Job not found.");
-        } else {
-          setError("Failed to load job.");
-        }
+        setError(getErrorMessage(error,"Failed to load job."));
       } finally {
         setLoading(false);
       }
@@ -90,11 +87,11 @@ function EditJob() {
       toast.success("Job updated successfully!");
       navigate("/my-jobs");
     } catch (error) {
-      const message = error.response?.data?.message || error.response?.data || "Could not update the job.";
       toast.error(
-        typeof message === "string"
-          ? message
-          : "Could not update the job."
+        getErrorMessage(
+          error,
+          "Could not update the job."
+        )
       );
     } finally {
       setSubmitting(false);
@@ -109,7 +106,7 @@ function EditJob() {
             <div className="card-body p-4 p-md-5">
               <h1 className="mb-4"> Edit Job </h1>
               <Formik initialValues={initialValues} enableReinitialize validationSchema={jobSchema} onSubmit={handleSubmit}>
-                {({ isSubmitting }) => (
+                {({ isSubmitting, isValid, dirty }) => (
                   <Form>
                     <div className="row">
                       <div className="col-md-6">
@@ -199,7 +196,8 @@ function EditJob() {
 
                     <div className="d-flex gap-2 mt-4">
                       <button type="button" className="btn btn-outline-secondary flex-grow-1" onClick={() => navigate("/my-jobs")}> Cancel </button>
-                      <button type="submit" className="btn btn-primary flex-grow-1" disabled={isSubmitting}>
+                      <button type="submit" className="btn btn-primary flex-grow-1" 
+                      disabled={isSubmitting || !isValid || !dirty}>
                         {isSubmitting
                           ? "Updating..."
                           : "Update Job"}

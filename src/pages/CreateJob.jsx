@@ -5,6 +5,7 @@ import FormInput from "../components/FormInput";
 import jobSchema from "../validation/jobSchema";
 import normalizeJob from "../utils/normalizeJob";
 import { createJob } from "../services/jobsService";
+import getErrorMessage from "../utils/getErrorMessage";
 
 function CreateJob() {
   const navigate = useNavigate();
@@ -33,9 +34,12 @@ function CreateJob() {
       toast.success("Job published successfully!");
       navigate("/my-jobs");
     } catch (error) {
-      const message =
-        error.response?.data?.message || error.response?.data || "Could not publish the job.";
-      toast.error(typeof message === "string"? message: "Could not publish the job.");
+      toast.error(
+        getErrorMessage(
+          error,
+          "Could not publish the job."
+        )
+      );
     } finally {
       setSubmitting(false);
     }
@@ -49,7 +53,7 @@ function CreateJob() {
             <div className="card-body p-4 p-md-5">
               <h1 className="mb-4"> Post a New Job </h1>
               <Formik initialValues={initialValues} validationSchema={jobSchema} onSubmit={handleSubmit}>
-                {({ isSubmitting }) => (
+                {({ isSubmitting, isValid, dirty }) => (
                   <Form>
                     <div className="row">
                       <div className="col-md-6">
@@ -138,7 +142,9 @@ function CreateJob() {
                     <FormInput label="Image URL (Optional)" name="imageUrl" placeholder="https://..."/>
                     <FormInput label="Image Alt Text" name="imageAlt"/>
 
-                    <button type="submit" className="btn btn-primary w-100 mt-3" disabled={isSubmitting}>
+                    <button type="submit" className="btn btn-primary w-100 mt-3" 
+                    disabled={isSubmitting || !isValid || !dirty}
+                    >
                       {isSubmitting
                         ? "Publishing..."
                         : "Publish Job"}

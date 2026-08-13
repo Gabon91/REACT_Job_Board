@@ -3,6 +3,7 @@ import { FaBookmark, FaRegBookmark, FaMapMarkerAlt, FaBriefcase, FaMoneyBillWave
 import fallbackImage from "../assets/no_logo_company.png";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import getErrorMessage from "../utils/getErrorMessage";
 import { useAuth } from "../contexts/AuthContext";
 import { toggleSavedJob } from "../services/jobsService";
 
@@ -22,16 +23,10 @@ function JobCard({ job, onSavedChange }) {
 
 
 const [isSaved, setIsSaved] = useState(
-  Boolean(
-    currentUserId &&
-    job.savedBy?.includes(currentUserId)
-  )
-);
+  Boolean(currentUserId && job.savedBy?.includes(currentUserId)));
 
 useEffect(() => {
-  setIsSaved(
-    Boolean(currentUserId && job.savedBy?.includes(currentUserId))
-  );
+  setIsSaved(Boolean(currentUserId && job.savedBy?.includes(currentUserId)));
 }, [job.savedBy, currentUserId]);
 
 const handleSave = async () => {
@@ -47,9 +42,14 @@ const handleSave = async () => {
     );
 
     onSavedChange?.(job._id,newSavedState);
-  } catch {
-    toast.error("Could not update saved job.");
-  } finally {
+    } catch (error) {
+      toast.error(
+        getErrorMessage(
+          error,
+          "Could not update saved job."
+        )
+      );
+    } finally {
     setSaving(false);
   }
 };

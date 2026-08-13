@@ -6,6 +6,8 @@ import JobCard from "../components/JobCard";
 import Pagination from "../components/Pagination";
 import ConfirmationModal from "../components/ConfirmationModal";
 import {getMyJobs, deleteJob} from "../services/jobsService";
+import JobCardSkeleton from "../components/JobCardSkeleton";
+import getErrorMessage from "../utils/getErrorMessage";
 const JOBS_PER_PAGE = 6;
 
 function MyJobs() {
@@ -22,8 +24,8 @@ function MyJobs() {
       try {
         const data = await getMyJobs();
         setJobs(data);
-      } catch {
-        setError("Failed to load your jobs.");
+      } catch (error) {
+        setError(getErrorMessage(error, "Failed to load your jobs."));
       } finally {
         setLoading(false);
       }
@@ -60,14 +62,14 @@ function MyJobs() {
         );
         toast.success("Job deleted successfully.");
         setJobToDelete(null);
-      } catch {
-        toast.error("Could not delete the job.");
-      } finally {
+      } catch (error) {
+        toast.error(getErrorMessage(error, "Could not delete the job."));
+      }finally {
         setDeleting(false);
       }
     };
 
-  /* Whe deleting the only job on a page (1 out of 6 slots) 
+  /* When deleting the only job on a page (1 out of 6 slots) 
      move back one page and delete the old page.*/
   useEffect(() => {
     const pages = Math.ceil(jobs.length / JOBS_PER_PAGE);
@@ -76,14 +78,21 @@ function MyJobs() {
     }
   }, [jobs, currentPage]);
 
-  if (loading) {
-    return (
-      <div className="container py-5 text-center">
-        <div className="spinner-border" role="status"/>
-        <p className="mt-3"> Loading your jobs... </p>
+if (loading) {
+  return (
+    <main className="container py-5">
+      <h1 className="mb-4"> My Jobs </h1>
+      <div className="row g-4">
+        {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="col-12 col-md-6 col-lg-4">
+              <JobCardSkeleton />
+            </div>
+          )
+        )}
       </div>
-    );
-  }
+    </main>
+  );
+}
 
   if (error) {
     return (

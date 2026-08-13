@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { loginUser } from "../services/usersService";
 import { useAuth } from "../contexts/AuthContext";
 import loginSchema from "../validation/loginSchema";
-
+import getErrorMessage from "../utils/getErrorMessage";
 function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -34,18 +34,15 @@ function Login() {
       login(token);
       toast.success("Login successful!");
       navigate("/");
-    } catch (error) {
-      const message =
-        error.response?.data?.message ||
-        error.response?.data ||
-        error.message ||
-        "Login failed. Please try again.";
+      } catch (error) {
+        const message = getErrorMessage(error, "Login failed. Please try again.",
+          {
+            401: "Incorrect email or password.",
+            423: "Your account is locked. Please try again later.",
+          }
+        );
+        toast.error(message);
 
-      toast.error(
-        typeof message === "string"
-          ? message
-          : "Login failed. Please try again."
-      );
     } finally {
       setSubmitting(false);
     }
@@ -60,8 +57,8 @@ function Login() {
               <h1 className="text-center mb-4">
                 Login
               </h1>
-              <Formik initialValues={initialValues} validationSchema={loginSchema} onSubmit={handleSubmit}>
-                {({ isSubmitting }) => (
+              <Formik initialValues={initialValues} validationSchema={loginSchema} onSubmit={handleSubmit} validateOnMount>
+                {({ isSubmitting, isValid  }) => (
                   <Form>
                     <div className="mb-3">
                       <label htmlFor="email" className="form-label"> Email </label>
@@ -75,7 +72,7 @@ function Login() {
                       <ErrorMessage name="password" component="div" className="text-danger small mt-1"/>
                     </div>
 
-                    <button type="submit" className="btn btn-primary w-100" disabled={isSubmitting}>
+                    <button type="submit" className="btn btn-primary w-100" disabled={isSubmitting || !isValid}>
                       {isSubmitting
                         ? "Logging in..."
                         : "Login"}

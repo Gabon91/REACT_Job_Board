@@ -5,7 +5,8 @@ import JobCard from "../components/JobCard";
 import SearchFilters from "../components/SearchFilters";
 import Pagination from "../components/Pagination";
 import useDebounce from "../hooks/useDebounce";
-
+import JobCardSkeleton from "../components/JobCardSkeleton";
+import getErrorMessage from "../utils/getErrorMessage";
 const JOBS_PER_PAGE = 6;
 
 const initialFilters = {
@@ -34,7 +35,7 @@ function Home() {
         const data = await getAllJobs();
         setJobs(data);
       } catch (error) {
-        setError("Failed to load jobs. Please try again later.");
+        setError(getErrorMessage(error, "Failed to load jobs. Please try again later."));
       } finally {
         setLoading(false);
       }
@@ -125,15 +126,21 @@ const handleSavedChange = (jobId, isSaved) => {
   );
 };
 
-  if (loading) {
-    return (
-      <div className="container py-5 text-center">
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-        <p className="mt-3">Loading jobs...</p>
+if (loading) {
+  return (
+    <main className="container py-5">
+      <h2 className="mb-4"> Loading Jobs... </h2>
+      <div className="row g-4">
+        {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="col-12 col-md-6 col-lg-4">
+              <JobCardSkeleton />
+            </div>
+          )
+        )}
       </div>
-    );  }
+    </main>
+  );
+}
 
   if (error) {
     return (
