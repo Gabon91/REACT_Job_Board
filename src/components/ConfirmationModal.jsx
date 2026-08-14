@@ -7,7 +7,7 @@ function ConfirmationModal({show, title, message, onConfirm, onCancel, loading =
   return (
     <>
       <div className="modal fade show d-block" tabIndex="-1" role="dialog">
-        <div className="modal-dialog modal-dialog-centered">
+        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title"> {title} </h5>
