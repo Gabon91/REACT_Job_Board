@@ -24,3 +24,13 @@ export const toggleRecruiterStatus = async (id) => {
   const response = await apiClient.patch(`/users/${id}`);
   return response.data;
 };
+
+export const getAllUsers = async () => {
+  const response = await apiClient.get("/users");
+  return response.data;
+};
+
+export const deleteUser = async (id) => {
+  const response = await apiClient.delete(`/users/${id}`);
+  return response.data;
+};
