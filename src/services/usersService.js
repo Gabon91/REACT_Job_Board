@@ -19,3 +19,8 @@ export const updateUser = async (id, userData) => {
   const response = await apiClient.put(`/users/${id}`,userData);
   return response.data;
 };
+
+export const toggleRecruiterStatus = async (id) => {
+  const response = await apiClient.patch(`/users/${id}`);
+  return response.data;
+};

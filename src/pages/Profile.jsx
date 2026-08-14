@@ -3,17 +3,21 @@ import {Formik,Form} from "formik";
 import { toast } from "react-toastify";
 import FormInput from "../components/FormInput";
 import { useAuth } from "../contexts/AuthContext";
-import {getUserById,updateUser} from "../services/usersService";
+import {getUserById,updateUser,toggleRecruiterStatus} from "../services/usersService";
 import profileSchema from "../validation/profileSchema";
 import normalizeProfile from "../utils/normalizeProfile";
 import getErrorMessage from "../utils/getErrorMessage";
-
+import { useNavigate } from "react-router-dom";
 function Profile() {
-  const { user } = useAuth();
+  const { user,logout} = useAuth();
   const userId = user?.id || user?._id;
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const [changingRecruiterStatus, setChangingRecruiterStatus] =
+  useState(false);
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -94,6 +98,21 @@ function Profile() {
       setSubmitting(false);
     }
   };
+
+  const handleRecruiterToggle = async () => {
+  try {
+    setChangingRecruiterStatus(true);
+    await toggleRecruiterStatus(userId);
+    toast.success(profile.isRecruiter? "Recruiter status removed. Please log in again.": "Recruiter status enabled. Please log in again.");
+    logout();
+    navigate("/login", {replace: true,});
+  } catch (error) {
+    toast.error(getErrorMessage(error,"Could not update recruiter status."));
+  } finally {
+    setChangingRecruiterStatus(false);
+  }
+};
+
 
   return (
     <main className="container py-5">
@@ -199,10 +218,47 @@ function Profile() {
                   </Form>
                 )}
               </Formik>
+
+              <hr className="my-5" />
+              <div>
+                <h3>Recruiter Status</h3>
+                <p className="text-muted">
+                  Current status:{" "}
+                  <strong>
+                    {profile.isRecruiter
+                      ? "Recruiter"
+                      : "Regular User"}
+                  </strong>
+                </p>
+
+                <button
+                  type="button"
+                  className={
+                    profile.isRecruiter
+                      ? "btn btn-outline-danger"
+                      : "btn btn-outline-primary"
+                  }
+                  onClick={handleRecruiterToggle}
+                  disabled={changingRecruiterStatus}
+                >
+                  {changingRecruiterStatus
+                    ? "Updating..."
+                    : profile.isRecruiter
+                      ? "Disable Recruiter Account"
+                      : "Become a Recruiter"}
+                </button>
+
+                <p className="small text-muted mt-2">
+                  Changing recruiter status requires you to log in again.
+                </p>
+              </div>
             </div>
           </div>
         </div>
+        
       </div>
+
+      
     </main>
   );
 }
