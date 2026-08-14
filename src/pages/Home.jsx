@@ -160,7 +160,7 @@ if (loading) {
 
   return (
     <main>
-      <section className="bg-light py-5 mb-4">
+      <section className="bg-body-tertiary py-5 mb-4">
         <div className="container text-center">
           <h1 className="display-5 fw-bold">Find Your Next Opportunity</h1>
           <p className="lead text-muted">Browse jobs from companies looking for talented people like you.</p>

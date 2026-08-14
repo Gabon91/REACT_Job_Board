@@ -11,10 +11,24 @@ body,
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background-color: #f8f9fa;
-  color: #212529;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 a {
   text-decoration: none;
+}
+
+.card,
+.form-control,
+.form-select,
+.modal-content {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
