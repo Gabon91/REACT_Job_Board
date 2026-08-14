@@ -5,6 +5,7 @@ import JobCardSkeleton from "../components/JobCardSkeleton";
 import { getAllJobs } from "../services/jobsService";
 import { useAuth } from "../contexts/AuthContext";
 import getErrorMessage from "../utils/getErrorMessage";
+import { toast } from "react-toastify";
 
 function SavedJobs() {
   const { user } = useAuth();
@@ -20,8 +21,11 @@ function SavedJobs() {
         const filteredJobs = jobs.filter((job) => job.savedBy?.includes(currentUserId));
         setSavedJobs(filteredJobs);
       } catch (error) {
-        setError(getErrorMessage(error, "Failed to load saved jobs."));
-      } finally {
+        const message = getErrorMessage(error,"Failed to load saved jobs.");
+        setError(message);
+        if (!error.response) {
+          toast.error(message, {toastId: "server-connection-error"});
+        }      } finally {
         setLoading(false);
       }
     };

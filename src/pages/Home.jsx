@@ -7,6 +7,8 @@ import Pagination from "../components/Pagination";
 import useDebounce from "../hooks/useDebounce";
 import JobCardSkeleton from "../components/JobCardSkeleton";
 import getErrorMessage from "../utils/getErrorMessage";
+import { toast } from "react-toastify";
+
 const JOBS_PER_PAGE = 6;
 
 const initialFilters = {
@@ -35,7 +37,11 @@ function Home() {
         const data = await getAllJobs();
         setJobs(data);
       } catch (error) {
-        setError(getErrorMessage(error, "Failed to load jobs. Please try again later."));
+        const message = getErrorMessage(error, "Failed to load jobs.");
+        setError(message);
+        if (!error.response) {
+          toast.error(message, {toastId: "server-connection-error"});
+        }
       } finally {
         setLoading(false);
       }

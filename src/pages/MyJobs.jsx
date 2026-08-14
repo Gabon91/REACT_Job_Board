@@ -25,8 +25,11 @@ function MyJobs() {
         const data = await getMyJobs();
         setJobs(data);
       } catch (error) {
-        setError(getErrorMessage(error, "Failed to load your jobs."));
-      } finally {
+        const message = getErrorMessage(error,"Failed to load your jobs.");
+        setError(message);
+        if (!error.response) {
+          toast.error(message, {toastId: "server-connection-error"});
+        }      } finally {
         setLoading(false);
       }
     };

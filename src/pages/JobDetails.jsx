@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { FaMapMarkerAlt, FaBriefcase, FaMoneyBillWave, FaEnvelope, FaPhone, FaCalendarAlt, FaHashtag } from "react-icons/fa";
 import { getJobById } from "../services/jobsService";
 import fallbackImage from "../assets/no_logo_company.png";
+import { toast } from "react-toastify";
 
 function JobDetails() {
   const { id } = useParams();
@@ -22,13 +23,12 @@ function JobDetails() {
         setJob(data);
       } 
       catch (error) {
-        if (error.response?.status === 404) {
-          setNotFound(true);
-        } else {
-          setError("Failed to load job details. Please try again later.");
+        const message = getErrorMessage(error,"Failed to load jobs.");
+        setError(message);
+        if (!error.response) {
+          toast.error(message, {toastId: "server-connection-error"});
         }
-      }
-      finally {
+      } finally {
         setLoading(false);
       }
     };
