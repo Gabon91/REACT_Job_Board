@@ -14,10 +14,19 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers["x-auth-token"] = token;
     }
-
     return config;
   },
   (error) => Promise.reject(error)
 );
 
+apiClient.interceptors.response.use(
+  (response) => response,
+
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+    }
+    return Promise.reject(error);
+  }
+);
 export default apiClient;

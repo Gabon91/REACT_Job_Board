@@ -113,7 +113,6 @@ function Profile() {
   }
 };
 
-
   return (
     <main className="container py-5">
       <div className="row justify-content-center">
@@ -124,96 +123,60 @@ function Profile() {
               <div className="alert alert-secondary">
                 <strong>Email:</strong>{" "}
                 {profile.email}
-                <br />
-                Email and password cannot
-                be changed from this page.
+                <br /> Email and password cannot be changed from this page.
               </div>
-
-              <Formik
-                initialValues={initialValues}
-                enableReinitialize
-                validationSchema={
-                  profileSchema
-                }
-                onSubmit={handleSubmit}
-              >
-                {({
-                  isSubmitting,
-                  isValid,
-                  dirty,
-                }) => (
+              <Formik initialValues={initialValues} enableReinitialize validationSchema={profileSchema} onSubmit={handleSubmit}>
+                {({isSubmitting, isValid, dirty}) => (
                   <Form>
-
                     <h4 className="mb-3"> Personal Details </h4>
                     <div className="row">
                       <div className="col-md-4">
                         <FormInput label="First Name" name="firstName"/>
                       </div>
-
                       <div className="col-md-4">
                         <FormInput label="Middle Name" name="middleName"/>
                       </div>
-
                       <div className="col-md-4">
                         <FormInput label="Last Name" name="lastName"/>
                       </div>
                     </div>
-
                     <FormInput label="Phone" name="phone" type="tel"/>
                     <hr className="my-4" />
                     <h4 className="mb-3"> Address </h4>
-
                     <div className="row">
                       <div className="col-md-6">
                         <FormInput label="Country" name="country"/>
                       </div>
-
                       <div className="col-md-6">
                         <FormInput label="City" name="city"/>
                       </div>
                     </div>
-
                     <div className="row">
                       <div className="col-md-8">
                         <FormInput label="Street" name="street"/>
                       </div>
-
                       <div className="col-md-4">
                         <FormInput label="House Number" name="houseNumber" type="number"/>
                       </div>
                     </div>
-
                     <div className="row">
                       <div className="col-md-6">
                         <FormInput label="State / District" name="state"/>
                       </div>
-
                       <div className="col-md-6">
                         <FormInput label="Zip Code" name="zip"/>
                       </div>
                     </div>
-
                     <hr className="my-4" />
                     <h4 className="mb-3"> Profile Image </h4>
                     <FormInput label="Image URL" name="imageUrl"/>
                     <FormInput label="Image Alt Text" name="imageAlt"/>
-
                     <hr className="my-4" />
                     <h4 className="mb-3"> Confirm Changes </h4>
                     <p className="text-muted"> Enter your current password to save your profile changes.</p>
                     <FormInput label="Current Password" name="currentPassword" type="password"/>
-                    <button
-                      type="submit"
-                      className="btn btn-primary w-100 mt-3"
-                      disabled={
-                        isSubmitting ||
-                        !isValid ||
-                        !dirty
-                      }
-                    >
-                      {isSubmitting
-                        ? "Saving..."
-                        : "Save Changes"}
+                    <button type="submit" className="btn btn-primary w-100 mt-3" disabled={isSubmitting || !isValid || !dirty}>
+                      {isSubmitting? "Saving..." : "Save Changes"}
                     </button>
                   </Form>
                 )}
@@ -222,45 +185,20 @@ function Profile() {
               <hr className="my-5" />
               <div>
                 <h3>Recruiter Status</h3>
-                <p className="text-muted">
-                  Current status:{" "}
-                  <strong>
-                    {profile.isRecruiter
-                      ? "Recruiter"
-                      : "Regular User"}
-                  </strong>
+                <p className="text-muted"> Current status:{" "} 
+                  <strong> {profile.isRecruiter? "Recruiter" : "Regular User"} </strong>
                 </p>
 
-                <button
-                  type="button"
-                  className={
-                    profile.isRecruiter
-                      ? "btn btn-outline-danger"
-                      : "btn btn-outline-primary"
-                  }
-                  onClick={handleRecruiterToggle}
-                  disabled={changingRecruiterStatus}
-                >
-                  {changingRecruiterStatus
-                    ? "Updating..."
-                    : profile.isRecruiter
-                      ? "Disable Recruiter Account"
-                      : "Become a Recruiter"}
+                <button type="button" className={profile.isRecruiter? "btn btn-outline-danger": "btn btn-outline-primary"} onClick={handleRecruiterToggle} disabled={changingRecruiterStatus}>
+                  {changingRecruiterStatus? "Updating..." : profile.isRecruiter? "Disable Recruiter Account": "Become a Recruiter"}
                 </button>
-
-                <p className="small text-muted mt-2">
-                  Changing recruiter status requires you to log in again.
-                </p>
+                <p className="small text-muted mt-2"> Changing recruiter status requires you to log in again. </p>
               </div>
             </div>
           </div>
         </div>
-        
       </div>
-
-      
     </main>
   );
 }
-
 export default Profile;

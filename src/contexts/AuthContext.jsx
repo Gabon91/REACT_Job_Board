@@ -1,12 +1,5 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-
-import { decodeJwt } from "../utils/jwtUtils";
-
+import {createContext, useContext, useEffect, useState} from "react";
+import { decodeJwt, isTokenExpired } from "../utils/jwtUtils";
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -14,25 +7,28 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
       return;
     }
 
-    const decodedUser = decodeJwt(token);
+    try {
+      if (isTokenExpired(token)) {
+        localStorage.removeItem("token");
+        setUser(null);
+        return;
+      }
 
-    if (decodedUser) {
+      const decodedUser = decodeJwt(token);
       setUser(decodedUser);
-    } else {
+    } catch {
       localStorage.removeItem("token");
+      setUser(null);
     }
   }, []);
 
   const login = (token) => {
     localStorage.setItem("token", token);
-
     const decodedUser = decodeJwt(token);
-
     setUser(decodedUser);
   };
 
@@ -45,9 +41,7 @@ export function AuthProvider({ children }) {
     user,
     isAuthenticated: Boolean(user),
     isRecruiter: Boolean(user?.isRecruiter),
-    isAdmin: Boolean(
-      user?.isAdmin ?? user?._isAdmin
-    ),
+    isAdmin: Boolean(user?.isAdmin ?? user?._isAdmin),
     login,
     logout,
   };
