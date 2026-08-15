@@ -131,16 +131,6 @@ if (loading) {
             {currentJobs.map((job) => (
                 <div key={job._id} className="col-12 col-md-6 col-lg-4">
                   <JobCard job={job} />
-                  <div className="d-flex gap-2 mt-2">
-                    <button type="button" className=" btn btn-outline-primary flex-grow-1" onClick={() => navigate(`/jobs/edit/${job._id}`)}>
-                      <FaEdit className="me-2" /> 
-                      Edit 
-                    </button>
-                    <button type="button" className=" btn btn-outline-danger flex-grow-1" onClick={() => handleDeleteClick(job)}>
-                      <FaTrash className="me-2" />
-                      Delete
-                    </button>
-                  </div>
                 </div>
               )
             )}

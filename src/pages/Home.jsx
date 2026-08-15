@@ -107,30 +107,35 @@ function Home() {
     }
   };
   
-const handleSavedChange = (jobId, isSaved) => {
-  const currentUserId = user?.id || user?._id;
-  if (!currentUserId) 
-    return;
-  
-  setJobs((currentJobs) => 
-    currentJobs.map((job) => {
-      if (job._id !== jobId)
-        return job;
-      const currentSavedBy = job.savedBy || [];
-      return {
-        ...job,
-        savedBy: isSaved
-          ? [
-              ...new Set([
-                ...currentSavedBy,
-                currentUserId,
-              ]),
-            ]
-          : currentSavedBy.filter((id) => id !== currentUserId),
-      };
-    })
-  );
-};
+  const handleJobDeleted = (jobId) => {
+    setJobs((currentJobs) =>
+      currentJobs.filter((job) => job._id !== jobId));
+  };
+
+  const handleSavedChange = (jobId, isSaved) => {
+    const currentUserId = user?.id || user?._id;
+    if (!currentUserId) 
+      return;
+    
+    setJobs((currentJobs) => 
+      currentJobs.map((job) => {
+        if (job._id !== jobId)
+          return job;
+        const currentSavedBy = job.savedBy || [];
+        return {
+          ...job,
+          savedBy: isSaved
+            ? [
+                ...new Set([
+                  ...currentSavedBy,
+                  currentUserId,
+                ]),
+              ]
+            : currentSavedBy.filter((id) => id !== currentUserId),
+        };
+      })
+    );
+  };
 
 if (loading) {
   return (
