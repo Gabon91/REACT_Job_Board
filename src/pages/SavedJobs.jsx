@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import LoadingSpinner from "../components/LoadingSpinner";
 import { Link } from "react-router-dom";
+import EmptyState from "../components/EmptyState";
 import JobCard from "../components/JobCard";
 import JobCardSkeleton from "../components/JobCardSkeleton";
 import { getAllJobs } from "../services/jobsService";
@@ -45,17 +47,9 @@ function SavedJobs() {
 
 if (loading) {
   return (
-    <main className="container py-5">
-      <h1 className="mb-4"> Saved Jobs </h1>
-      <div className="row g-4">
-        {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="col-12 col-md-6 col-lg-4">
-              <JobCardSkeleton />
-            </div>
-          )
-        )}
-      </div>
-    </main>
+  <main className="container py-5">
+    <LoadingSpinner message="Loading saved jobs..." />
+  </main>
   );
 }
 
@@ -71,11 +65,12 @@ if (loading) {
     <main className="container py-5">
       <h1 className="mb-4"> Saved Jobs </h1>
       {savedJobs.length === 0 ? (
-        <div className="text-center py-5 border rounded">
-          <h3> No Saved Jobs </h3>
-          <p className="text-muted"> You haven't saved any jobs yet.</p>
-          <Link to="/"className="btn btn-primary"> Browse Jobs</Link>
-        </div>
+        <EmptyState
+          title="No saved jobs"
+          message="You haven't saved any jobs yet. Jobs you save will appear here."
+          actionText="Browse Jobs"
+          actionTo="/"
+        />
       ) : (
         <div className="row g-4">
           {savedJobs.map((job) => (

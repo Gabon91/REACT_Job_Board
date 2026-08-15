@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+import LoadingSpinner from "../components/LoadingSpinner";
 import {Formik, Form, Field, ErrorMessage} from "formik";
 import {useNavigate, useParams} from "react-router-dom";
 import {toast} from "react-toastify";
@@ -45,8 +46,7 @@ function EditJob() {
   if (loading) {
     return (
       <div className="container py-5 text-center">
-        <div className="spinner-border" role="status"/>
-        <p className="mt-3"> Loading job... </p>
+        <LoadingSpinner message="Loading job..." />
       </div>
     );
   }

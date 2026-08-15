@@ -8,6 +8,8 @@ import ConfirmationModal from "../components/ConfirmationModal";
 import {getMyJobs, deleteJob} from "../services/jobsService";
 import JobCardSkeleton from "../components/JobCardSkeleton";
 import getErrorMessage from "../utils/getErrorMessage";
+import LoadingSpinner from "../components/LoadingSpinner";
+import EmptyState from "../components/EmptyState";
 const JOBS_PER_PAGE = 6;
 
 function MyJobs() {
@@ -85,6 +87,7 @@ if (loading) {
   return (
     <main className="container py-5">
       <h1 className="mb-4"> My Jobs </h1>
+      <LoadingSpinner message="Loading your jobs..." />
       <div className="row g-4">
         {Array.from({ length: 6 }).map((_, index) => (
             <div key={index} className="col-12 col-md-6 col-lg-4">
@@ -119,13 +122,13 @@ if (loading) {
       </div>
 
       {jobs.length === 0 ? (
-        <div className="text-center border rounded py-5">
-          <h3> You haven't posted any jobs yet </h3>
-          <p className="text-muted"> Publish your first job and it will appear here. </p>
-          <Link to="/jobs/create" className="btn btn-primary">
-            <FaPlus className="me-2" /> Post Your First Job </Link>
-        </div>
-      ) : (
+        <EmptyState
+          title="No jobs published yet"
+          message="Publish your first job to start recruiting candidates."
+          actionText="Post a New Job"
+          actionTo="/jobs/create"
+        />
+      ) : ( 
         <>
           <div className="row g-4">
             {currentJobs.map((job) => (

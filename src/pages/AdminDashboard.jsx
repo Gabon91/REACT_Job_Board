@@ -5,7 +5,7 @@ import {getAllUsers, deleteUser} from "../services/usersService";
 import Pagination from "../components/Pagination";
 import ConfirmationModal from "../components/ConfirmationModal";
 import getErrorMessage from "../utils/getErrorMessage";
-
+import LoadingSpinner from "../components/LoadingSpinner";
 const USERS_PER_PAGE = 8;
 
 function AdminDashboard() {
@@ -179,16 +179,9 @@ function AdminDashboard() {
 
   if (loading) {
     return (
-      <main className="container py-5 text-center">
-        <div
-          className="spinner-border"
-          role="status"
-        />
-
-        <p className="mt-3">
-          Loading users...
-        </p>
-      </main>
+    <main className="container py-5">
+      <LoadingSpinner message="Loading users..." />
+    </main>
     );
   }
 

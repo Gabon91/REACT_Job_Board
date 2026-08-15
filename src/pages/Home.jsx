@@ -8,7 +8,7 @@ import useDebounce from "../hooks/useDebounce";
 import JobCardSkeleton from "../components/JobCardSkeleton";
 import getErrorMessage from "../utils/getErrorMessage";
 import { toast } from "react-toastify";
-
+import LoadingSpinner from "../components/LoadingSpinner";
 const JOBS_PER_PAGE = 6;
 
 const initialFilters = {
@@ -140,7 +140,7 @@ function Home() {
 if (loading) {
   return (
     <main className="container py-5">
-      <h2 className="mb-4"> Loading Jobs... </h2>
+      <LoadingSpinner message="Loading jobs..." />
       <div className="row g-4">
         {Array.from({ length: 6 }).map((_, index) => (
             <div key={index} className="col-12 col-md-6 col-lg-4">

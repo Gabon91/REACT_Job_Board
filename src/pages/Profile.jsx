@@ -1,4 +1,5 @@
 import {useEffect,useState} from "react";
+import LoadingSpinner from "../components/LoadingSpinner";
 import {Formik,Form} from "formik";
 import { toast } from "react-toastify";
 import FormInput from "../components/FormInput";
@@ -38,8 +39,7 @@ function Profile() {
   if (loading) {
     return (
       <main className="container py-5 text-center">
-        <div className="spinner-border" role="status"/>
-        <p className="mt-3"> Loading profile... </p>
+        <LoadingSpinner message="Loading profile..." />
       </main>
     );
   }

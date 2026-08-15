@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import LoadingSpinner from "../components/LoadingSpinner";
 import { Link, useParams } from "react-router-dom";
 import { FaMapMarkerAlt, FaBriefcase, FaMoneyBillWave, FaEnvelope, FaPhone, FaCalendarAlt, FaHashtag } from "react-icons/fa";
 import { getJobById } from "../services/jobsService";
 import fallbackImage from "../assets/no_logo_company.png";
 import { toast } from "react-toastify";
+import getErrorMessage from "../utils/getErrorMessage";
 
 function JobDetails() {
   const { id } = useParams();
@@ -37,12 +39,9 @@ function JobDetails() {
 
   if (loading) {
     return (
-      <div className="container py-5 text-center">
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-        <p className="mt-3">Loading job details...</p>
-      </div>
+    <main className="container py-5">
+      <LoadingSpinner message="Loading job details..." />
+    </main>
     );
   }
 
